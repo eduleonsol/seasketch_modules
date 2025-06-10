@@ -10,7 +10,7 @@
   "clients": [
     {
       "title": "MPAAnalysis",
-      "uri": "/client.js",
+      "uri": "https://eduleonsol.github.io/seasketch_modules/client.js",
       "bundleSize": 0,
       "apiVersion": "1.0.0",
       "tabs": []
@@ -39,6 +39,6 @@
       "endpoint": "https://www.seasketch.org/api/external-mpa-service/analyze"
     }
   ],
-  "uri": "https://eduleonsol.github.io/seasketch_modules",
-  "clientSideBundle": "/client.js"
+  "uri": "https://eduleonsol.github.io/seasketch_modules/config.json",
+  "clientSideBundle": "https://eduleonsol.github.io/seasketch_modules/client.js"
 }
