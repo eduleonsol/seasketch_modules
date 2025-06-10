@@ -1,0 +1,27 @@
+title: SeaSketch MPA Analysis
+description: Marine Protected Area analysis module for SeaSketch
+baseurl: /seasketch_modules
+url: https://eduleonsol.github.io
+
+# GitHub Pages settings
+github:
+  source:
+    branch: main
+    path: /docs
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+theme: jekyll-theme-cayman
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor
