@@ -1,0 +1,15 @@
+# Handle CORS preflight requests
+/*    /index.html   200
+
+# Explicit CORS headers for config.json
+/config.json /config.json 200
+  Access-Control-Allow-Origin: *
+  Content-Type: application/json
+  Access-Control-Allow-Methods: GET, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+
+# Explicit CORS headers for client.js
+/client.js /client.js 200
+  Access-Control-Allow-Origin: *
+  Content-Type: application/javascript
+  Access-Control-Allow-Methods: GET, OPTIONS
