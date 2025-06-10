@@ -4,13 +4,13 @@
   "region": "us-west-1",
   "apiVersion": "1.0.0",
   "version": "1.0.0",
-  "relatedUri": "https://github.com/marine-conservation/mpa-analysis",
-  "sourceUri": "git+https://github.com/marine-conservation/mpa-analysis.git",
-  "published": "2025-06-10T22:45:00.000Z",
+  "relatedUri": "https://github.com/eduleonsol/seasketch_modules",
+  "sourceUri": "git+https://github.com/eduleonsol/seasketch_modules.git",
+  "published": "2025-06-10T22:26:00.000Z",
   "clients": [
     {
       "title": "MPAAnalysis",
-      "uri": null,
+      "uri": "https://eduleonsol.github.io/seasketch_modules/client.js",
       "bundleSize": 0,
       "apiVersion": "1.0.0",
       "tabs": []
@@ -36,9 +36,9 @@
       "medianCost": 0,
       "type": "javascript",
       "issAllowList": ["*"],
-      "endpoint": "https://www.seasketch.org/api/external-mpa-service/analyze"
+      "endpoint": "/api/analyze"
     }
   ],
-  "uri": "https://eduleonsol.github.io/seasketch_modules/",
-  "clientSideBundle": null
+  "uri": "https://eduleonsol.github.io/seasketch_modules",
+  "clientSideBundle": "https://eduleonsol.github.io/seasketch_modules/client.js"
 }
