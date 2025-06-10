@@ -39,6 +39,6 @@
       "endpoint": "https://www.seasketch.org/api/external-mpa-service/analyze"
     }
   ],
-  "uri": "",
+  "uri": "https://eduleonsol.github.io/seasketch_modules/",
   "clientSideBundle": null
 }
