@@ -1,0 +1,100 @@
+{
+  "version": 2,
+  "public": true,
+  "github": {
+    "enabled": false,
+    "autoJobCancelation": false
+  },
+  "builds": [
+    {
+      "src": "api/test.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/index.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/health.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/analyze.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/test",
+      "dest": "/api/test.ts",
+      "methods": ["GET", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+        "Access-Control-Max-Age": "86400",
+        "Vary": "Origin"
+      }
+    },
+    {
+      "src": "/",
+      "dest": "/config.json",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    },
+    {
+      "src": "/api/health",
+      "dest": "/api/health.ts",
+      "methods": ["GET", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+        "Access-Control-Max-Age": "86400",
+        "Vary": "Origin"
+      }
+    },
+    {
+      "src": "/api/analyze",
+      "dest": "/api/analyze.ts",
+      "methods": ["POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+        "Access-Control-Max-Age": "86400",
+        "Vary": "Origin"
+      }
+    },
+    {
+      "src": "/api/(.*)",
+      "status": 404,
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+        "Access-Control-Max-Age": "86400",
+        "Vary": "Origin"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Cache-Control": "public, max-age=3600"
+      }
+    }
+  ]
+}

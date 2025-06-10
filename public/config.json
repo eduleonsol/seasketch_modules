@@ -1,0 +1,44 @@
+{
+  "title": "mpa-analysis",
+  "author": "Marine Conservation Team",
+  "region": "us-west-1",
+  "apiVersion": "1.0.0",
+  "version": "1.0.0",
+  "relatedUri": "https://github.com/marine-conservation/mpa-analysis",
+  "sourceUri": "git+https://github.com/marine-conservation/mpa-analysis.git",
+  "published": "2025-06-10T22:30:00.000Z",
+  "clients": [
+    {
+      "title": "MPAAnalysis",
+      "uri": "https://geoprocessingseasketch.vercel.app/client",
+      "bundleSize": 0,
+      "apiVersion": "1.0.0",
+      "tabs": []
+    }
+  ],
+  "feedbackClients": [],
+  "preprocessingServices": [],
+  "geoprocessingServices": [
+    {
+      "memory": 10240,
+      "title": "mpaAnalysis",
+      "description": "Marine Protected Area analysis",
+      "executionMode": "async",
+      "timeout": 300,
+      "requiresProperties": [],
+      "handlerFilename": "analyze.ts",
+      "vectorDataSources": [],
+      "rateLimited": false,
+      "rateLimit": 0,
+      "rateLimitPeriod": "daily",
+      "rateLimitConsumed": 0,
+      "medianDuration": 0,
+      "medianCost": 0,
+      "type": "javascript",
+      "issAllowList": ["*"],
+      "endpoint": "https://geoprocessingseasketch.vercel.app/api/analyze"
+    }
+  ],
+  "uri": "https://geoprocessingseasketch.vercel.app",
+  "clientSideBundle": "https://geoprocessingseasketch.vercel.app/client/bundle.js"
+}
