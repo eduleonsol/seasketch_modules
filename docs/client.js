@@ -1,52 +1,85 @@
-// MPA Analysis Client for SeaSketch
+/**
+ * MPA Analysis Client for SeaSketch
+ * This client integrates with SeaSketch's reporting system
+ */
 console.log('MPA Analysis client loaded');
 
-// Add styles
+// Add styles to match SeaSketch's UI
 const style = document.createElement('style');
 style.textContent = `
   .mpa-analysis-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #2d3748;
+    padding: 10px 20px;
+    margin-bottom: 20px;
   }
-  .loading-message {
-    padding: 15px;
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    margin: 10px 0;
-    font-size: 16px;
-    text-align: center;
-    color: #495057;
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+  }
+  .loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3182ce;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .error-message {
-    padding: 15px;
-    background: #fff5f5;
-    border: 1px solid #ffc9c9;
+    background-color: #fed7d7;
+    border: 1px solid #fc8181;
+    color: #c53030;
     border-radius: 4px;
+    padding: 12px;
     margin: 10px 0;
-    color: #c92a2a;
   }
-  .results-container {
-    margin-top: 20px;
+  .metric-card {
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
-  .result-item {
-    margin: 10px 0;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 4px;
+  .metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
   }
-  .result-title {
-    font-weight: bold;
-    margin-bottom: 5px;
+  .metric-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: #4a5568;
   }
-  .result-value {
+  .metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #3182ce;
+  }
+  .metric-subtitle {
+    font-size: 14px;
+    color: #718096;
+    margin-top: 4px;
+  }
+  .section-title {
     font-size: 18px;
-    color: #1864ab;
+    font-weight: 600;
+    margin: 20px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
   }
 `;
 document.head.appendChild(style);
 
-// Main client object
+// This client object will be used by SeaSketch to render the report
 export default {
   // Called when the client is initialized
   initialize: function() {
@@ -54,102 +87,155 @@ export default {
     return Promise.resolve();
   },
   
-  // Called when the analysis is run
+  // Called when a sketch is analyzed
+  // This is the main function that SeaSketch calls
   run: function(sketch) {
     console.log('Running MPA analysis for sketch:', sketch);
     
-    // Create container if it doesn't exist
-    let container = document.getElementById('mpa-analysis-container');
+    // Find the SeaSketch report container or create our own
+    let container = document.querySelector('.mpa-analysis-container');
     if (!container) {
       container = document.createElement('div');
-      container.id = 'mpa-analysis-container';
       container.className = 'mpa-analysis-container';
-      document.body.appendChild(container);
+      
+      // Find the appropriate SeaSketch container to append to
+      const reportContainer = document.querySelector('.ReportSection') || 
+                            document.querySelector('.geoprocessing-report') || 
+                            document.body;
+      
+      reportContainer.appendChild(container);
     }
     
-    // Clear previous results
+    // Clear any previous results
     container.innerHTML = '';
     
-    // Show loading message
-    const loadingMessage = document.createElement('div');
-    loadingMessage.className = 'loading-message';
-    loadingMessage.textContent = 'Analyzing MPA...';
-    container.appendChild(loadingMessage);
+    // Add section title
+    const sectionTitle = document.createElement('h2');
+    sectionTitle.className = 'section-title';
+    sectionTitle.textContent = 'MPA Analysis Results';
+    container.appendChild(sectionTitle);
+    
+    // Show loading indicator
+    const loadingContainer = document.createElement('div');
+    loadingContainer.className = 'loading-container';
+    
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner';
+    
+    const loadingText = document.createElement('div');
+    loadingText.textContent = 'Analyzing MPA sketch...';
+    
+    loadingContainer.appendChild(spinner);
+    loadingContainer.appendChild(loadingText);
+    container.appendChild(loadingContainer);
     
     // Return a promise that resolves with the analysis results
     return new Promise((resolve, reject) => {
       try {
-        // Simulate analysis delay (replace with actual API call)
+        // In a real implementation, this would call your actual geoprocessing endpoint
+        // For now, we'll simulate a delay and return mock results
         setTimeout(() => {
           try {
-            // Remove loading message
-            if (loadingMessage.parentNode) {
-              loadingMessage.parentNode.removeChild(loadingMessage);
-            }
+            // Remove loading spinner
+            container.removeChild(loadingContainer);
             
-            // Create results container
-            const resultsContainer = document.createElement('div');
-            resultsContainer.className = 'results-container';
-            
-            // Add sample results (replace with actual analysis results)
-            const results = [
-              { title: 'Area', value: '1,234 km²' },
-              { title: 'Perimeter', value: '456 km' },
-              { title: 'Depth Range', value: '10-50m' }
+            // Generate mock metrics (in real implementation, these would come from your API)
+            const metrics = [
+              { 
+                title: 'Total Area', 
+                value: '1,234', 
+                units: 'km²',
+                description: 'Total area of the MPA' 
+              },
+              { 
+                title: 'Protection Level', 
+                value: '75', 
+                units: '%',
+                description: 'Percentage of area under protection' 
+              },
+              { 
+                title: 'Habitat Coverage', 
+                value: '3', 
+                units: 'types',
+                description: 'Number of habitat types included' 
+              },
+              { 
+                title: 'Depth Range', 
+                value: '10-50', 
+                units: 'm',
+                description: 'Min and max depth' 
+              }
             ];
             
-            // Add results to container
-            results.forEach(result => {
-              const resultItem = document.createElement('div');
-              resultItem.className = 'result-item';
-              resultItem.innerHTML = `
-                <div class="result-title">${result.title}</div>
-                <div class="result-value">${result.value}</div>
-              `;
-              resultsContainer.appendChild(resultItem);
+            // Render each metric in a card
+            metrics.forEach(metric => {
+              const metricCard = document.createElement('div');
+              metricCard.className = 'metric-card';
+              
+              const metricHeader = document.createElement('div');
+              metricHeader.className = 'metric-header';
+              
+              const titleEl = document.createElement('div');
+              titleEl.className = 'metric-title';
+              titleEl.textContent = metric.title;
+              
+              const valueEl = document.createElement('div');
+              valueEl.className = 'metric-value';
+              valueEl.textContent = `${metric.value} ${metric.units}`;
+              
+              metricHeader.appendChild(titleEl);
+              metricHeader.appendChild(valueEl);
+              
+              const subtitleEl = document.createElement('div');
+              subtitleEl.className = 'metric-subtitle';
+              subtitleEl.textContent = metric.description;
+              
+              metricCard.appendChild(metricHeader);
+              metricCard.appendChild(subtitleEl);
+              
+              container.appendChild(metricCard);
             });
             
-            // Add results to container
-            container.appendChild(resultsContainer);
-            
-            // Resolve with success
+            // Resolve the promise with successful results
+            // This tells SeaSketch that our analysis is complete
             resolve({
               success: true,
               message: 'Analysis completed successfully',
-              sketch: sketch
+              data: {
+                metrics: metrics,
+                sketch: sketch.properties?.name || 'Unnamed sketch'
+              }
             });
             
           } catch (error) {
-            handleError(error, container, loadingMessage);
+            console.error('Error rendering MPA analysis results:', error);
+            showError(container, error);
             reject(error);
           }
-        }, 2000); // 2 second delay for simulation
+        }, 2000);
         
       } catch (error) {
-        handleError(error, container, loadingMessage);
+        console.error('Error in MPA analysis:', error);
+        showError(container, error);
         reject(error);
       }
     });
   }
 };
 
-// Helper function to handle errors
-function handleError(error, container, loadingMessage) {
-  console.error('Error in MPA analysis:', error);
+// Helper function to display errors
+function showError(container, error) {
+  // Create error message element
+  const errorEl = document.createElement('div');
+  errorEl.className = 'error-message';
+  errorEl.textContent = `Analysis Error: ${error.message || 'Unknown error occurred'}`;
   
-  // Remove loading message if it exists
-  if (loadingMessage && loadingMessage.parentNode) {
-    loadingMessage.parentNode.removeChild(loadingMessage);
-  }
-  
-  // Show error message
-  const errorMessage = document.createElement('div');
-  errorMessage.className = 'error-message';
-  errorMessage.textContent = 'Error in MPA analysis: ' + (error.message || 'Unknown error');
-  
+  // Add to container, clearing previous content
   if (container) {
-    container.appendChild(errorMessage);
+    container.innerHTML = '';
+    container.appendChild(errorEl);
   } else {
-    document.body.appendChild(errorMessage);
+    // Fallback if container isn't available
+    document.body.appendChild(errorEl);
   }
 }
