@@ -19,10 +19,14 @@
   "dependencies": {
     "@seasketch/geoprocessing": "^6.0.0",
     "@turf/area": "^6.5.0",
-    "@turf/intersect": "^6.5.0",
     "@turf/helpers": "^6.5.0",
+    "@turf/intersect": "^6.5.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "@vercel/node": "^3.0.0",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",

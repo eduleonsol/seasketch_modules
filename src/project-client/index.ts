@@ -1,62 +1,116 @@
-import { ProjectClientBase, ProjectActions, SketchForm, ReportManager } from '@seasketch/geoprocessing/client-core';
 import MPAReport from '../clients/MPAReport';
+import { MPAnalysisResult } from '../types';
+import React from 'react';
 
-/**
- * ProjectClient extends ProjectClientBase to provide project-specific
- * client-side functionality for the SeaSketch MPA module.
- */
-export default new (class ProjectClient extends ProjectClientBase {
-  constructor() {
-    super();
+// Define interfaces for SeaSketch types
+declare global {
+  interface Window {
+    ReportManager?: {
+      registerComponent: (id: string, component: React.ComponentType<any>) => void;
+      registerReport: (config: {
+        id: string;
+        component: React.ComponentType<any>;
+        title: string;
+        description?: string;
+        order?: number;
+        enabledByDefault?: boolean;
+      }) => void;
+      showReport: (config: { id: string; props?: any }) => void;
+    };
   }
+}
 
-  /**
-   * Register project-specific actions
-   */
-  async registerActions(actions: ProjectActions) {
-    // Register the MPA analysis action
+interface SketchForm {
+  id: string;
+  name: string;
+  properties: Record<string, any>;
+  // Add other required properties
+}
+
+// Simple implementation of the project client
+const projectClient = {
+  // Initialize the project client
+  async init() {
+    console.log('[MPA] Initializing project client');
+    
+    // Register the MPA report component
+    if (window.ReportManager) {
+      window.ReportManager.registerComponent('mpa-analysis-report', MPAReport);
+      
+      window.ReportManager.registerReport({
+        id: 'mpa-analysis-report',
+        component: MPAReport,
+        title: 'MPA Analysis',
+        description: 'Marine Protected Area Analysis Report',
+        order: 1,
+        enabledByDefault: true
+      });
+    }
+    
+    return this;
+  },
+  
+  // Register actions for the project
+  async registerActions(actions: any) {
+    if (!actions || !actions.registerAction) {
+      console.warn('Actions API not available');
+      return;
+    }
+    
     actions.registerAction({
       id: 'mpa-analysis',
       title: 'MPA Analysis',
       description: 'Run MPA analysis on the current sketch',
       handler: async (sketch: SketchForm) => {
-        console.log('Running MPA analysis for sketch:', sketch.properties?.name);
+        console.log('[MPA] Starting analysis for sketch:', sketch.properties?.name);
         
         try {
-          // Dynamically load the client.js script from docs directory
-          const clientModule = await import('../../docs/client.js');
+          // First, run the geoprocessing function
+          const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              sketch,
+              options: {
+                analyzeFishingZones: true,
+                includeHabitatImpact: true
+              }
+            })
+          });
           
-          if (clientModule && typeof clientModule.default?.run === 'function') {
-            console.log('MPA client module loaded, running analysis...');
-            // Run the analysis using our client.js module
-            const result = await clientModule.default.run(sketch);
-            return result || { success: true };
-          } else {
-            console.error('MPA client module loaded but run function not found');
-            return { success: false, error: 'Client module missing run function' };
+          if (!response.ok) {
+            throw new Error(`Analysis failed: ${response.statusText}`);
           }
-        } catch (err) {
-          console.error('Error loading MPA client module', err);
-          return { success: false, error: err.message || 'Unknown error' };
+          
+          const result = await response.json() as MPAnalysisResult;
+          console.log('[MPA] Analysis completed:', result);
+          
+          // Show the report with the results
+          if (window.ReportManager?.showReport) {
+            window.ReportManager.showReport({
+              id: 'mpa-analysis-report',
+              props: { result }
+            });
+          }
+          
+          return { 
+            success: true, 
+            message: 'MPA analysis completed successfully',
+            data: result
+          };
+          
+        } catch (error: unknown) {
+          const err = error as Error;
+          console.error('[MPA] Analysis error:', err);
+          return { 
+            success: false, 
+            error: err.message || 'Failed to complete MPA analysis' 
+          };
         }
       }
     });
   }
-  
-  /**
-   * Initialize any project-specific client-side functionality
-   */
-  async init() {
-    await super.init();
-    
-    // Register the MPA Report with ReportManager
-    ReportManager.registerReport('mpa-analysis-report', {
-      component: MPAReport,
-      title: 'MPA Analysis Report',
-      sortOrder: 0,
-      enabledByDefault: true
-    });
-    
-    console.log('MPA Project Client initialized');
-  }
-})();
+};
+
+// Export the project client
+export default projectClient;
